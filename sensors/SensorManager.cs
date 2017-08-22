@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reactive.Linq;
 using System.Text;
 using MQTTnet.Core;
@@ -11,7 +12,7 @@ namespace Sensors
     public class SensorManager
     {
         public IMqttClient Mqtt { get; protected set; }
-        public ElasticSearchClient<SensorData> ElasticSearch { get; protected set; }
+        public ElasticSearch<SensorData> ElasticSearch { get; protected set; }
 
         List<IDisposable> _subscriptions = new List<IDisposable>();
         List<Sensor> _sensors = new List<Sensor>();
@@ -28,7 +29,7 @@ namespace Sensors
                         new MqttApplicationMessage(
                             retain: true,
                             topic: $"sensor/{sensor.GetType().Name}".ToLower(),
-                            payload: Encoding.ASCII.GetBytes(value.ToString()),
+                            payload: Encoding.ASCII.GetBytes(value.ToString(CultureInfo.InvariantCulture)),
                             qualityOfServiceLevel: MqttQualityOfServiceLevel.ExactlyOnce
                         ));
                 }));
@@ -37,7 +38,10 @@ namespace Sensors
         public SensorManager()
         {
             Mqtt = new MqttClientFactories().CloudMqtt();
-            ElasticSearch = new ElasticSearchClient<SensorData>("http://elastic:changeme@192.168.1.20:9200", "iot");
+            string conn = Environment.GetEnvironmentVariable("ELASTICSEARCH_URI");
+            string index = Environment.GetEnvironmentVariable("ELASTICSEARCH_INDEX");
+            
+            ElasticSearch = new ElasticSearch<SensorData>(conn, index);
             Mqtt.ConnectAsync().Wait(1000);
         }
 

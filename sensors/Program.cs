@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using MQTTnet.Core;
 using MQTTnet.Core.Client;
 using MQTTnet.Core.Packets;
 using MQTTnet.Core.Protocol;
@@ -18,18 +19,40 @@ namespace Sensors
             var topics = new TopicFilter[]
             {
                 new TopicFilter("sensor/#", MqttQualityOfServiceLevel.AtMostOnce),
+                new TopicFilter("alarm/#", MqttQualityOfServiceLevel.AtLeastOnce),
             };
 
             manager.Mqtt.SubscribeAsync(topics).Wait(1000);
 
-            manager.Mqtt.ApplicationMessageReceived += (object sender, MqttApplicationMessageReceivedEventArgs e) =>
+            manager.Mqtt.ApplicationMessageReceived += async (object sender, MqttApplicationMessageReceivedEventArgs e) =>
             {
-                var sensorType = e.ApplicationMessage.Topic.Split('/')[1];
-                var value = float.Parse(Encoding.ASCII.GetString(e.ApplicationMessage.Payload));
+                // TODO Sensor values can be implemented as IObservable and processed with Rx.Linq
+
+                var topic = e.ApplicationMessage.Topic;
+                var sensorType = topic.Split('/')[1];
+
+                float value = float.MinValue;
                 
-                switch (sensorType)
+                if (topic.StartsWith("sensor/"))
+                   value = float.Parse(Encoding.ASCII.GetString(e.ApplicationMessage.Payload));
+
+                if (value > 0.8)
                 {
-                    case "gas":
+                    var payload = Encoding.ASCII.GetBytes(DateTime.Now.ToShortTimeString());
+                    
+                    var alarm = new MqttApplicationMessage(
+                        retain: true,
+                        topic: $"alarm/{sensorType}",
+                        payload: payload,
+                        qualityOfServiceLevel: MqttQualityOfServiceLevel.AtLeastOnce
+                    );
+
+                    await manager.Mqtt.PublishAsync(alarm);
+                }
+
+                switch (topic)
+                {
+                    case "sensor/gas":
                     {
                         var data = new GasSensorData()
                         {
@@ -37,11 +60,12 @@ namespace Sensors
                             Value = value,
                             Type = sensorType.ToUpper(),
                         };
+
                         manager.ElasticSearch.Index(data);
 
                         break;
                     }
-                    case "smoke":
+                    case "sensor/smoke":
                     {
                         var data = new SmokeSensorData()
                         {
@@ -51,20 +75,18 @@ namespace Sensors
                         };
 
                         manager.ElasticSearch.Index(data);
+
                         break;
                     }
                     default:
                         break;
                 }
-                
-                var msg = float.Parse(Encoding.ASCII.GetString(e.ApplicationMessage.Payload));
 
-                Console.WriteLine($"{e.ApplicationMessage.Topic}: {msg}");
-//                manager.ElasticSearch.Index()
+                Console.WriteLine($"{e.ApplicationMessage.Topic}: {Encoding.ASCII.GetString(e.ApplicationMessage.Payload)}");
             };
 
-            manager.Watch(new Gas(min: 0.05, max: 0.951), TimeSpan.FromMilliseconds(1000));
-            manager.Watch(new Smoke(min: 0.05, max: 0.951), TimeSpan.FromMilliseconds(1000));
+            manager.Watch(new Gas(min: 0.05, max: 0.95), TimeSpan.FromMilliseconds(1000));
+            manager.Watch(new Smoke(min: 0.05, max: 0.95), TimeSpan.FromMilliseconds(1000));
 
             Console.ReadLine();
 
@@ -80,13 +102,13 @@ namespace Sensors
     {
         public DateTime DateTime { get; set; }
         public float Value { get; set; }
-        public string Type  { get; set; }
+        public string Type { get; set; }
     }
 
     public class GasSensorData : SensorData
     {
     }
-    
+
     public class SmokeSensorData : SensorData
     {
     }

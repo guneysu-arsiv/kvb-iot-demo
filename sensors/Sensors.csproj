@@ -76,7 +76,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ElasticSearchClient.cs" />
+    <Compile Include="ElasticSearch.cs" />
     <Compile Include="MqttClientFactories.cs" />
     <Compile Include="Gas.cs" />
     <Compile Include="Program.cs" />
