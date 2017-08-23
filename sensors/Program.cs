@@ -97,19 +97,4 @@ namespace Sensors
             //            Thread.Sleep(60);
         }
     }
-
-    public class SensorData
-    {
-        public DateTime DateTime { get; set; }
-        public float Value { get; set; }
-        public string Type { get; set; }
-    }
-
-    public class GasSensorData : SensorData
-    {
-    }
-
-    public class SmokeSensorData : SensorData
-    {
-    }
 }
