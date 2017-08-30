@@ -16,11 +16,11 @@ namespace SensorsMonitor
 
         public SensorMonitor()
         {
+            /*
             string conn = Environment.GetEnvironmentVariable("ELASTICSEARCH_URI");
             string index = Environment.GetEnvironmentVariable("ELASTICSEARCH_INDEX");
-            
             ElasticSearch = new ElasticSearch<SensorData>(conn, index);
-
+            */
             
             Mqtt = new MqttClientFactories().CloudMqtt();
             Mqtt.ConnectAsync().Wait(1000);

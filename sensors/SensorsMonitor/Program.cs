@@ -15,7 +15,8 @@ namespace SensorsMonitor
         public static void Main(string[] args)
         {
             var manager = new SensorMonitor();
-
+            var controls = new SystemControls();
+            
             var topics = new TopicFilter[]
             {
                 new TopicFilter("sensor/#", MqttQualityOfServiceLevel.AtMostOnce),
@@ -29,51 +30,49 @@ namespace SensorsMonitor
 
                 var topic = e.ApplicationMessage.Topic;
                 var sensorType = topic.Split('/')[1];
-
+                SensorData data = null;
+                
                 float value = float.MinValue;
                 
                 if (topic.StartsWith("sensor/"))
                    value = float.Parse(Encoding.ASCII.GetString(e.ApplicationMessage.Payload));
 
-                if (value > 0.8)
-                {
-                    var payload = Encoding.ASCII.GetBytes(DateTime.Now.ToShortTimeString());
-                    // TODO Cut the gas flow, activat sprinkler system.                   
-                }
-
                 switch (topic)
                 {
                     case "sensor/gas":
                     {
-                        var data = new GasSensorData()
+                        data = new GasSensorData()
                         {
                             DateTime = DateTime.Now,
                             Value = value,
                             Type = sensorType.ToUpper(),
                         };
 
-                        manager.ElasticSearch.Index(data);
+//                        manager.ElasticSearch.Index(data);
 
                         break;
                     }
                     case "sensor/smoke":
                     {
-                        var data = new SmokeSensorData()
+                        data = new SmokeSensorData()
                         {
                             DateTime = DateTime.Now,
                             Value = value,
                             Type = sensorType.ToUpper(),
                         };
 
-                        manager.ElasticSearch.Index(data);
+//                        manager.ElasticSearch.Index(data);
 
                         break;
                     }
                     default:
                         break;
                 }
+                
+                if (value > 0.8)
+                    controls.Alarm(data);
 
-                Console.WriteLine($"{e.ApplicationMessage.Topic}: {Encoding.ASCII.GetString(e.ApplicationMessage.Payload)}");
+                Console.WriteLine(data);
             };
 
             Console.ReadLine();
