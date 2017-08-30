@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reactive.Linq;
 
-namespace Sensors
+namespace Sensors.Simulation
 {
     public abstract class Sensor
     {

@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.0.0
 MinimumVisualStudioVersion = 10.0.0.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sensors", "Sensors.csproj", "{F53C2131-0A34-4B40-839E-C015CB0CFD75}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorsApi", "SensorsApi\SensorsApi.csproj", "{25AB0AD2-28C7-4D1E-A5B3-63170FE7D616}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sensors", "Sensors\Sensors.csproj", "{F53C2131-0A34-4B40-839E-C015CB0CFD75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorsMonitor", "SensorsMonitor\SensorsMonitor.csproj", "{E7BF250B-C75D-4DF6-9603-EF7F14AFCE94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +15,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F53C2131-0A34-4B40-839E-C015CB0CFD75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F53C2131-0A34-4B40-839E-C015CB0CFD75}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F53C2131-0A34-4B40-839E-C015CB0CFD75}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F53C2131-0A34-4B40-839E-C015CB0CFD75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25AB0AD2-28C7-4D1E-A5B3-63170FE7D616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25AB0AD2-28C7-4D1E-A5B3-63170FE7D616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25AB0AD2-28C7-4D1E-A5B3-63170FE7D616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25AB0AD2-28C7-4D1E-A5B3-63170FE7D616}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7BF250B-C75D-4DF6-9603-EF7F14AFCE94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7BF250B-C75D-4DF6-9603-EF7F14AFCE94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7BF250B-C75D-4DF6-9603-EF7F14AFCE94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7BF250B-C75D-4DF6-9603-EF7F14AFCE94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

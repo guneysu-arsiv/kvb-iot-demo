@@ -6,42 +6,37 @@ using System.Text;
 using MQTTnet.Core;
 using MQTTnet.Core.Client;
 using MQTTnet.Core.Protocol;
+using Sensors.Utils;
 
-namespace Sensors
+namespace Sensors.Simulation
 {
-    public class SensorManager
+    public class SensorSimulation
     {
         public IMqttClient Mqtt { get; protected set; }
-        public ElasticSearch<SensorData> ElasticSearch { get; protected set; }
 
-        List<IDisposable> _subscriptions = new List<IDisposable>();
-        List<Sensor> _sensors = new List<Sensor>();
+        private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
 
         public void Watch(Sensor sensor, TimeSpan interval)
         {
-            _sensors.Add(sensor);
 
             _subscriptions.Add(Observable.Interval(interval)
                 .Subscribe(x =>
                 {
                     var value = sensor.Read();
+                    var topic = $"sensor/{sensor.GetType().Name}".ToLower();
                     Mqtt.PublishAsync(
                         new MqttApplicationMessage(
                             retain: true,
-                            topic: $"sensor/{sensor.GetType().Name}".ToLower(),
+                            topic: topic,
                             payload: Encoding.ASCII.GetBytes(value.ToString(CultureInfo.InvariantCulture)),
                             qualityOfServiceLevel: MqttQualityOfServiceLevel.ExactlyOnce
                         ));
                 }));
         }
 
-        public SensorManager()
+        public SensorSimulation()
         {
             Mqtt = new MqttClientFactories().CloudMqtt();
-            string conn = Environment.GetEnvironmentVariable("ELASTICSEARCH_URI");
-            string index = Environment.GetEnvironmentVariable("ELASTICSEARCH_INDEX");
-            
-            ElasticSearch = new ElasticSearch<SensorData>(conn, index);
             Mqtt.ConnectAsync().Wait(1000);
         }
 

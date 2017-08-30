@@ -4,7 +4,7 @@ using System.Linq;
 using Elasticsearch.Net;
 using Nest;
 
-namespace Sensors
+namespace SensorsMonitor.DataAccess
 {
     public class ElasticSearch<T> where T : class, new()
     {

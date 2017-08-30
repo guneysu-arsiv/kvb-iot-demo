@@ -1,4 +1,4 @@
-﻿namespace Sensors
+﻿namespace SensorsMonitor.Models
 {
     public class SmokeSensorData : SensorData
     {

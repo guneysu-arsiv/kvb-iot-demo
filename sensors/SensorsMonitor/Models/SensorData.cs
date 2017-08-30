@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sensors
+namespace SensorsMonitor.Models
 {
     public class SensorData
     {

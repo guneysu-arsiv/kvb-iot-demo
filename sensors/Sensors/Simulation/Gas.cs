@@ -1,4 +1,4 @@
-﻿namespace Sensors
+﻿namespace Sensors.Simulation
 {
     public class Gas : Sensor
     {

@@ -2,7 +2,7 @@
 using MQTTnet;
 using MQTTnet.Core.Client;
 
-namespace Sensors
+namespace SensorsMonitor.Utils
 {
     public class MqttClientFactories
     {
