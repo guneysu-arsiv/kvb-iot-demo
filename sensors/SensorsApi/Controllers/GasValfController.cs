@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SensorsApi.Controllers
 {
@@ -6,15 +8,22 @@ namespace SensorsApi.Controllers
     public class GasValfController : Controller
     {
         [HttpDelete(Name = "BreakGas")]
-        public string Delete()
+        public bool Delete()
         {
-            return "Delete";
+            Console.WriteLine("Gas flow blocked");
+            return true; // Valf State true = on 
         }
         
         [HttpPost(Name = "SupplyGas")]
-        public string Post()
+        public bool Post()
         {
-            return "Post";
+            return false; // Valf State false = off
+        }
+
+        [HttpHead]
+        public void Head()
+        {
+            
         }
     }
 }

@@ -13,7 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "bulma": "^0.4.2",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "modernizr": "^3.5.0"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
